@@ -12,10 +12,14 @@ private static int nParticles = 10;
 	private static int qtMaxLevel = 3;
 	private static int qtMaxCapacity = 2;
 	private static QuadTree qtRoot;
-	private static int particleRadius = 10;
+	private static int particleRadius = 5;
 	public static int screenWidth = 800;
 	public static int screenHeight = 800;
 	private static boolean running = true;
+	private static double delta = 0;
+	private static long lastTime = System.nanoTime();
+	private static double ns = 1000000000;
+	private static double updateTicks = 60.0;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -26,7 +30,7 @@ private static int nParticles = 10;
 			Random random = new Random();
 			int iniX = random.nextInt(screenWidth - particleRadius);
 			int iniY = random.nextInt(screenHeight - particleRadius);
-			particles[i] = new Particle(iniX, iniY, particleRadius, 10, 10);
+			particles[i] = new Particle(iniX, iniY, particleRadius, 1, 1);
 		}
 		
 		JFrame frame = new JFrame("Trabalho 2");
@@ -38,11 +42,21 @@ private static int nParticles = 10;
 		frame.setResizable(false);
 		frame.setVisible(true);
 		
+		//Update
 		while(running) {
-			qtRoot.Update();
-			
-			for(int i = 0; i < particles.length; i++) {
-				particles[i].Move();
+			long now = System.nanoTime();
+			delta += (now - lastTime) / ns * updateTicks;
+			lastTime = now;
+			while(delta >= 1) {
+				qtRoot.Update();
+				
+				for(int i = 0; i < particles.length; i++) {
+					particles[i].Move();
+				}
+				
+				frame.invalidate();
+				frame.repaint();
+				delta--;
 			}
 		}
 	}
