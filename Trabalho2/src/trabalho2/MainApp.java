@@ -24,7 +24,7 @@ private static int nParticles = 10;
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		particles = new Particle[nParticles];
-		qtRoot = new QuadTree(0, 0, screenWidth, screenHeight, qtMaxCapacity, 0, qtMaxLevel);
+		qtRoot = new QuadTree(0, 0, screenWidth, qtMaxCapacity, 0, qtMaxLevel);
 		
 		for(int i = 0; i < nParticles; i++) {
 			Random random = new Random();
@@ -57,6 +57,7 @@ private static int nParticles = 10;
 				}
 				
 				frame.invalidate();
+				frame.validate();
 				frame.repaint();
 				delta--;
 			}

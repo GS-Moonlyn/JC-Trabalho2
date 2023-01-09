@@ -8,8 +8,7 @@ public class QuadTree {
 	
 	private int posX, posY;
 	private int qtCapacity;
-	private int qtHeight;
-	private int qtWidth;
+	private int qtSize;
 	private boolean isDivided;
 	public ArrayList<Particle> particles = new ArrayList<Particle>();
 	public ArrayList<Particle> containedParticles = new ArrayList<Particle>();
@@ -18,11 +17,10 @@ public class QuadTree {
 	private int level;
 	private int maxLevel;
 	
-	public QuadTree(int posX, int posY, int qtHeight, int qtWidth, int qtCapacity, int level, int maxLevel) {
+	public QuadTree(int posX, int posY, int qtSize, int qtCapacity, int level, int maxLevel) {
 		this.posX = posX;
 		this.posY = posY;
-		this.qtHeight = qtHeight;
-		this.qtWidth = qtWidth;
+		this.qtSize = qtSize;
 		this.qtCapacity = qtCapacity;
 		this.level = level;
 		this.maxLevel = maxLevel;
@@ -35,27 +33,30 @@ public class QuadTree {
 	}
 	
 	void Subdivide() {
-		NW = new QuadTree(posX, posY, qtHeight / 2, qtWidth / 2, qtCapacity, level + 1, maxLevel - 1);
-		NE = new QuadTree(qtWidth / 2, posY, qtHeight / 2, qtWidth / 2, qtCapacity, level + 1, maxLevel - 1);
-		SW = new QuadTree(posX, qtHeight /2, qtHeight / 2, qtWidth / 2, qtCapacity, level + 1, maxLevel - 1);
-		SE = new QuadTree(qtWidth / 2, qtHeight / 2, qtHeight / 2, qtWidth/ 2, qtCapacity, level + 1, maxLevel - 1);
+		NW = new QuadTree(posX, posY, qtSize / 2, qtCapacity, level + 1, maxLevel - 1);
+		NE = new QuadTree(posX + qtSize /2, posY, qtSize / 2, qtCapacity, level + 1, maxLevel - 1);
+		SW = new QuadTree(posX, posY + qtSize / 2, qtSize / 2, qtCapacity, level + 1, maxLevel - 1);
+		SE = new QuadTree(posX + qtSize / 2, posY + qtSize / 2, qtSize / 2, qtCapacity, level + 1, maxLevel - 1);
 		isDivided = true;
 		System.out.println("Subdividiu para o nível: " + (level + 1));
 		
 		for(int i = 0; i < particles.size(); i++){
 			InsertParticle(particles.get(i));
+			RemoveParticle(particles.get(i));
 		}
+	
 	}
 	
 	void Update() {
 
-		if(containedParticles.size() > qtCapacity && isDivided == false && level <= maxLevel) {
+		if(containedParticles.size() > qtCapacity && isDivided == false && level < maxLevel) {
 			Subdivide();
 		} 
 		
-		if(this.isDivided) {
-			System.out.println(this.NE.containedParticles.size());
-		}
+		if(isDivided) {NW.Update(); NE.Update(); SW.Update(); SE.Update();}
+	
+		
+		System.out.println("Level:" + level + " Particles: " + containedParticles.size());
 	}
 	
 	void InsertParticle(Particle particle){
@@ -81,15 +82,15 @@ public class QuadTree {
 	}
 	
 	boolean ContainsParticle(Particle particle) {
-		if(particle.posX + particle.radius > posX && particle.posX < posX + qtWidth && 
-		   particle.posY + particle.radius > posY && particle.posY < posY + qtHeight) {
+		if(particle.posX + particle.radius > posX && particle.posX < posX + qtSize && 
+		   particle.posY + particle.radius > posY && particle.posY < posY + qtSize) {
 			return true;
 		} else { return false;}
 	}
 	
 	void Draw(Graphics g) {
 		g.setColor(Color.BLACK);
-		g.drawRect(posX, posY, qtWidth, qtHeight);
+		g.drawRect(posX, posY, qtSize, qtSize);
 		
 		if(isDivided) {
 			NW.Draw(g);
