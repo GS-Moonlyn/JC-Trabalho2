@@ -24,21 +24,23 @@ private static int nParticles = 10;
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		particles = new Particle[nParticles];
-		qtRoot = new QuadTree(1, 1, screenWidth - 5, screenHeight - 5, qtMaxCapacity, 0, qtMaxLevel);
+		qtRoot = new QuadTree(0, 0, screenWidth, screenHeight, qtMaxCapacity, 0, qtMaxLevel);
 		
 		for(int i = 0; i < nParticles; i++) {
 			Random random = new Random();
 			int iniX = random.nextInt(screenWidth - particleRadius);
 			int iniY = random.nextInt(screenHeight - particleRadius);
 			particles[i] = new Particle(iniX, iniY, particleRadius, 1, 1);
+			qtRoot.particles.add(particles[i]);
 		}
-		
+	
 		JFrame frame = new JFrame("Trabalho 2");
 		Board board = new Board(particles, qtRoot);
 		frame.setSize(screenWidth, screenHeight);
 		frame.setTitle("Trabalho 2");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(board);
+		frame.pack();
 		frame.setResizable(false);
 		frame.setVisible(true);
 		

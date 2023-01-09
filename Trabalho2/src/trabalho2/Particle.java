@@ -19,11 +19,11 @@ public class Particle {
 	
 	void Move() {
 		
-		if(posX + (radius / 2) >= MainApp.screenWidth || posX - (radius / 2) <= 0) {
+		if(posX + radius >= MainApp.screenWidth || posX <= 0) {
 			speedX *= -1;
 		}
 		
-		if(posY + (radius / 2) >= MainApp.screenHeight || posY - (radius / 2) <= 0) {
+		if(posY + radius >= MainApp.screenHeight || posY <= 0) {
 			speedY *= -1;
 		}
 			
