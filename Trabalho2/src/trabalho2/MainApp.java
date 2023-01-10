@@ -6,10 +6,10 @@ import javax.swing.JFrame;
 
 public class MainApp {
 
-private static int nParticles = 10;
+private static int nParticles = 80;
 	
 	private static Particle[] particles;
-	private static int qtMaxLevel = 3;
+	private static int qtMaxLevel = 4;
 	private static int qtMaxCapacity = 2;
 	private static QuadTree qtRoot;
 	private static int particleRadius = 5;
@@ -45,7 +45,7 @@ private static int nParticles = 10;
 		frame.setVisible(true);
 		
 		//Update
-		while(running) {
+		/*while(running) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns * updateTicks;
 			lastTime = now;
@@ -57,10 +57,9 @@ private static int nParticles = 10;
 				}
 				
 				frame.invalidate();
-				frame.validate();
 				frame.repaint();
 				delta--;
 			}
-		}
+		}*/
 	}
 }

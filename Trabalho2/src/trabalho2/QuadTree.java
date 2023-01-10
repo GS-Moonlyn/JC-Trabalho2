@@ -32,25 +32,34 @@ public class QuadTree {
 		}
 	}
 	
-	void Subdivide() {
-		NW = new QuadTree(posX, posY, qtSize / 2, qtCapacity, level + 1, maxLevel - 1);
-		NE = new QuadTree(posX + qtSize /2, posY, qtSize / 2, qtCapacity, level + 1, maxLevel - 1);
-		SW = new QuadTree(posX, posY + qtSize / 2, qtSize / 2, qtCapacity, level + 1, maxLevel - 1);
-		SE = new QuadTree(posX + qtSize / 2, posY + qtSize / 2, qtSize / 2, qtCapacity, level + 1, maxLevel - 1);
+	void Subdivide(ArrayList<Particle> particles) {
+		NW = new QuadTree(posX, posY, qtSize / 2, qtCapacity, level + 1, maxLevel);
+		NE = new QuadTree(posX + qtSize /2, posY, qtSize / 2, qtCapacity, level + 1, maxLevel);
+		SW = new QuadTree(posX, posY + qtSize / 2, qtSize / 2, qtCapacity, level + 1, maxLevel);
+		SE = new QuadTree(posX + qtSize / 2, posY + qtSize / 2, qtSize / 2, qtCapacity, level + 1, maxLevel);
 		isDivided = true;
 		System.out.println("Subdividiu para o nível: " + (level + 1));
 		
-		for(int i = 0; i < particles.size(); i++){
-			InsertParticle(particles.get(i));
-			RemoveParticle(particles.get(i));
+		for(Particle p : particles) {
+			if(NW.ContainsParticle(p)) {
+				NW.containedParticles.add(p);
+			}
+			else if(NE.ContainsParticle(p)) {
+				NE.containedParticles.add(p);
+			}
+			else if(SW.ContainsParticle(p)) {
+				SW.containedParticles.add(p);
+			} else {
+				SE.containedParticles.add(p);
+			}
 		}
-	
+
 	}
 	
 	void Update() {
 
 		if(containedParticles.size() > qtCapacity && isDivided == false && level < maxLevel) {
-			Subdivide();
+			Subdivide(containedParticles);
 		} 
 		
 		if(isDivided) {NW.Update(); NE.Update(); SW.Update(); SE.Update();}
@@ -59,22 +68,14 @@ public class QuadTree {
 		System.out.println("Level:" + level + " Particles: " + containedParticles.size());
 	}
 	
-	void InsertParticle(Particle particle){
-		if(!isDivided) {
-			containedParticles.add(particle);
+	void InsertParticle(ArrayList<Particle> particles){
+		if(particles.size() < qtCapacity) {
+			containedParticles = particles;
 		} else {
-			if(NW.ContainsParticle(particle)) {
-				NW.containedParticles.add(particle);
-			} 
-			else if(NE.ContainsParticle(particle)) {
-				NE.containedParticles.add(particle);
+			if(!isDivided) {
+				Subdivide(containedParticles);
 			}
-			else if(SW.ContainsParticle(particle)) {
-				SW.containedParticles.add(particle);
-			} else {
-				SE.containedParticles.add(particle);
-			}
-		}
+		}		
 	}
 	
 	void RemoveParticle(Particle particle) {
